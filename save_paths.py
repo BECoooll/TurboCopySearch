@@ -39,22 +39,3 @@ def group_and_save_files(directory, file_types, destination_folder, batch_size=1
                 save_paths_to_file(current_batch, file_type, process_file.batch_count, destination_folder)
 
 
-file_types = {
-    'text': ['.txt', '.csv'],
-    'image': ['.jpg', '.png', '.gif'],
-    'document': ['.doc', '.docx', '.pdf'] }
-
-if __name__ == "__main__":
-    directory_to_search = "F:/CODES/ORCA/ComputerVison/Datasets"
-    destination_folder = 'C:/Users/bolou/Pictures/Dest'
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--directory_to_search", help="source_folder", default=directory_to_search)
-    parser.add_argument("--destination_folder", help="destination_folder", default=destination_folder)
-    parser.add_argument("--type_file", help="type of file", default=file_types)
-    parser.add_argument("--batch_size", help="Size of each txt file", default=10000)
-    args = parser.parse_args()
-
-    print(f"Please be patient, your {args.type_file} files are being copied to {args.destination_folder}")
-
-    group_and_save_files(args.directory_to_search, args.type_file, args.destination_folder,args.batch_size)

@@ -50,17 +50,3 @@ def copy_files_from_text_files(txt_files_folder, destination_folder, batch_size=
                     future.result()
 
 
-if __name__ == "__main__":
-    txt_files_folder = "C:/Users/bolou/Pictures/Dest"
-    destination_folder = 'C:/Users/bolou/Pictures/Destination'
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--txt_files_folder", help="source_folder", default=txt_files_folder)
-    parser.add_argument("--destination_folder", help="destination_folder", default=destination_folder)
-    args = parser.parse_args()
-
-    if not os.path.exists(args.destination_folder):
-        os.makedirs(args.destination_folder)
-    print(f"Please be patient, your files are being copied to {args.destination_folder}")
-
-    copy_files_from_text_files(args.txt_files_folder, args.destination_folder, max_workers=4)

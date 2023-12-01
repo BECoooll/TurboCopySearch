@@ -1,85 +1,35 @@
-import os
-import shutil
-import argparse
-from tqdm import tqdm
-from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
-import multiprocessing
-import time
-
-file_types = {
-    'text': ['.txt', '.csv'],
-    'image': ['.jpg', '.png', '.gif'],
-    'document': ['.doc', '.docx', '.pdf']
-}
-
-
-def copy_file(src_filepath, dest_folder,counter):
-    _, filename = os.path.split(src_filepath)
-    dest_filepath = os.path.join(dest_folder, filename)
-    count = 1
-    while os.path.exists(dest_filepath):
-        name, ext = os.path.splitext(filename)
-        filenam = f"{count}_{name}{ext}"
-        dest_filepath = os.path.join(dest_folder, filenam)
-        count += 1
-
-    shutil.copy2(src_filepath, dest_filepath)
-    with counter.get_lock():
-        counter.value += 1
-
-
-def copy_files_by_type(src_folder, dest_folder, file_type, file_types=file_types):
-    start_time = time.time()
-    counter = multiprocessing.Value('i', 0)
-
-    futures = []
-
-    with ProcessPoolExecutor() as process_executor, ThreadPoolExecutor() as thread_executor:
-        for foldername, subfolders, filenames in tqdm(os.walk(src_folder), desc="Processing", unit="iteration"):
-            for filename in filenames:
-                _, file_extension = os.path.splitext(filename)
-                allowed_extensions = file_types[file_type]
-                if file_extension.lower() in allowed_extensions:
-                    src_filepath = os.path.join(foldername, filename)
-                    futures.append(thread_executor.submit(copy_file, src_filepath, dest_folder, counter))
-
-        # Wait for all the copying tasks to complete
-        tqdm(total=len(futures), desc="Copying", unit="file").update(len(futures))
-        for future in tqdm(futures, desc="Copying", unit="file"):
-            future.result()
-
-    elapsed_time = time.time() - start_time
-    copied_files_count = counter.value
-    print(f"\nCopied {copied_files_count} {args.type_file} files in {elapsed_time:.2f} seconds.")
-
-
-
-def copy_files_by_type2(src_folder, dest_folder, file_type, file_types=file_types, num_threads=8):
-    # Create a ThreadPoolExecutor with the specified number of threads
-    with ThreadPoolExecutor(max_workers=num_threads) as executor:
-        futures = []
-
-        for foldername, subfolders, filenames in tqdm(os.walk(src_folder), desc="Processing", unit="iteration"):
-            for filename in filenames:
-                _, file_extension = os.path.splitext(filename)
-                allowed_extensions = file_types[file_type]
-                if file_extension.lower() in allowed_extensions:
-                    src_filepath = os.path.join(foldername, filename)
-                    futures.append(executor.submit(copy_file, src_filepath, dest_folder))
-
-        tqdm(total=len(futures), desc="Copying", unit="file").update(len(futures))
-        for future in tqdm(futures, desc="Copying", unit="file"):
-            future.result()
-source_folder = ""
-destination_folder = ""
+from copy_files import *
+from save_paths import  *
+import streamlit as st
+import wx
+file_types_dict = {
+    'Text': ['.txt', '.csv'],
+    'Image': ['.jpg', '.png', '.gif'],
+    'Document': ['.doc', '.docx', '.pdf']}
 
 if __name__ == "__main__":
+    directory_to_search = "F:/CODES/ORCA/ComputerVison/Datasets"
+    destination_folder = 'C:/Users/bolou/Pictures/Dest'
+    file_type = st.selectbox("What kind of files are you looking for?", ("Image", "Document","Text"))
+    file_types={file_type:file_types_dict[file_type]}
+    directory_to_search = st.text_input('Path to folder:')
+    destination_folder = st.text_input('Path to destination folder:')
+    # if st.button('Browse'):
+    #     dialog = wx.DirDialog(None, 'Selecta folder:', style = wx.DD_DEFAULT_STYLE | wx.DD_NEW_DIR_BUTTON)
+    #     if dialog.ShowModal() == wx.ID_OK:
+    #         folder_path = dialog.GetPath()
+    batch_size = 20000
+    txt_file_folder = f"{destination_folder}/txt_folder"
+    if not os.path.exists(destination_folder):
+        os.makedirs(destination_folder)
+    os.makedirs(txt_file_folder, exist_ok=True)
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--source_folder", help="source_folder", default=source_folder)
-    parser.add_argument("--destination_folder", help="destination_folder", default=destination_folder)
-    parser.add_argument("--type_file", help="type of file", default="image")
-    args = parser.parse_args()
+    st.write('WELCOME TO DIJITA TECHNOLOGIES TCS App')
 
-    print(f"Please be patient, your {args.type_file} files are being copied to {args.destination_folder}")
-    copy_files_by_type(args.source_folder, args.destination_folder, args.type_file)
+    if st.button('Run Turbo Copy'):
+        st.write("Your copy process has started")
+
+        st.write(f"Please be patient, your {file_type} files are being copied to {destination_folder}")
+        st.write(f"Retrieving path of all {file_type} in {destination_folder}")
+        # group_and_save_files(directory_to_search, file_types, txt_file_folder, batch_size)
+        # copy_files_from_text_files(txt_file_folder, destination_folder, max_workers=4)
