@@ -66,8 +66,6 @@ def copy_files_by_type2(src_folder, dest_folder, file_type, file_types=file_type
                 allowed_extensions = file_types[file_type]
                 if file_extension.lower() in allowed_extensions:
                     src_filepath = os.path.join(foldername, filename)
-
-                    # Use ThreadPoolExecutor to submit copy_file function
                     futures.append(executor.submit(copy_file, src_filepath, dest_folder))
 
         tqdm(total=len(futures), desc="Copying", unit="file").update(len(futures))
