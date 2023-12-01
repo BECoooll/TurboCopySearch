@@ -59,7 +59,6 @@ def copy_files_by_type2(src_folder, dest_folder, file_type, file_types=file_type
     with ThreadPoolExecutor(max_workers=num_threads) as executor:
         futures = []
 
-        # Iterate through the source folder and its subfolders
         for foldername, subfolders, filenames in tqdm(os.walk(src_folder), desc="Processing", unit="iteration"):
             for filename in filenames:
                 _, file_extension = os.path.splitext(filename)
