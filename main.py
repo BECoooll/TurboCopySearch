@@ -70,7 +70,6 @@ def copy_files_by_type2(src_folder, dest_folder, file_type, file_types=file_type
                     # Use ThreadPoolExecutor to submit copy_file function
                     futures.append(executor.submit(copy_file, src_filepath, dest_folder))
 
-        # Wait for all the copying tasks to complete
         tqdm(total=len(futures), desc="Copying", unit="file").update(len(futures))
         for future in tqdm(futures, desc="Copying", unit="file"):
             future.result()
