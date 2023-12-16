@@ -9,24 +9,30 @@ file_types_dict = {
     'Document': ['.doc', '.docx', '.pdf']}
 
 if __name__ == "__main__":
+    st.write('WELCOME TO DIJITA TECHNOLOGIES AppStore')
+
     start_time = time.time()
     directory_to_search = "F:/CODES/ORCA/From Github/Fake_Image_Detector/TurboCopySearch/Validation/Real"
     destination_folder = 'F:/CODES/ORCA/From Github/Fake_Image_Detector/TurboCopySearch/Validation'
     file_type = st.selectbox("What kind of files are you looking for?", ("Image", "Document","Text"))
     file_types={file_type:file_types_dict[file_type]}
-    directory_to_search = st.text_input('Path to folder:')
-    destination_folder = st.text_input('Path to destination folder:')
-    # if st.button('Browse'):
-    #     dialog = wx.DirDialog(None, 'Selecta folder:', style = wx.DD_DEFAULT_STYLE | wx.DD_NEW_DIR_BUTTON)
-    #     if dialog.ShowModal() == wx.ID_OK:
-    #         folder_path = dialog.GetPath()
+
+    directory_to_search = st.session_state.get("Path_to_source", None)
+    folder_select_button = st.button("Select Source Folder")
+    if folder_select_button:
+        directory_to_search = select_folder()
+        st.session_state.Path_to_source = directory_to_search
+
+    destination_folder = st.session_state.get("Path_to_destination", None)
+    folder_select_button = st.button("Select Destination Folder")
+    if folder_select_button:
+        destination_folder = select_folder()
+        st.session_state.Path_to_destination = destination_folder
+
     batch_size = 20000
     txt_file_folder = f"{destination_folder}/txt_folder"
-    if not os.path.exists(destination_folder):
-        os.makedirs(destination_folder)
     os.makedirs(txt_file_folder, exist_ok=True)
 
-    st.write('WELCOME TO DIJITA TECHNOLOGIES TCS App')
 
     if st.button('Run Turbo Copy'):
         st.write("Your copy process has started")

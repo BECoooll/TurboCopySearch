@@ -1,8 +1,19 @@
 import argparse
 import os
 import shutil
+import subprocess
+
 from tqdm import tqdm
 from concurrent.futures import ProcessPoolExecutor
+import tkinter as tk
+from tkinter import filedialog
+
+def select_folder():
+   root = tk.Tk()
+   root.withdraw()
+   folder_path = filedialog.askdirectory(master=root)
+   root.destroy()
+   return folder_path
 
 def copy_file(file_path, destination_folder):
     try:
