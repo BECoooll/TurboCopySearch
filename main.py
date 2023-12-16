@@ -2,7 +2,7 @@ from copy_files import *
 from save_paths import  *
 import streamlit as st
 import time
-import wx
+
 file_types_dict = {
     'Text': ['.txt', '.csv'],
     'Image': ['.jpg', '.png', '.gif'],

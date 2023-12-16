@@ -1,3 +1,2 @@
-tqdm==4.65.0
-streamlit==1.29.0
-wxpython==4.2.1
+streamlit>=1.29.0
+tqdm>=4.65.0
